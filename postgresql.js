@@ -1,22 +1,24 @@
 // Importing packages
+
+import { timeStamp } from "node:console";
 import http from "node:http";
-// import pkg from 'pg';
+import pkg from 'pg';
 
 // postgresql part comes here 
 
-// const Client = pkg.Client;
-// const client = new Client({
-// user: "harish",
-// host: "localhost",
-// database: "harish",
-// password: "root",
-// port: 1080
-// })
+const Client = pkg.Client;
+const client = new Client({
+user: "harish",
+host: "localhost",
+database: "harish",
+password: "root",
+port: 1080
+})
 
-// client.connect((err)=>{
-//   if (err) throw err;
-//   console.log("Connected")
-// })
+client.connect((err)=>{
+  if (err) throw err;
+  console.log("Connected")
+})
 
 
 
@@ -24,35 +26,36 @@ import http from "node:http";
 // POST method to post the users data
 
 
-let usersDatabase =[];
+let usersDatabase =[{
+  family: null,
+finance: null,
+fitness:null,
+faith :null,
+friend : null,
+field : null,
+fun : null ,
+dnt : null
+}];
 let userData;
 
 const server = http.createServer(function (req, res) {
   if(req.method === "POST" && req.url === "/create-record" ){
-
     req.setEncoding("utf8");
-
    req.on("data",(data)=>{
-
-    userData = data;
+    usersDatabase = data;
    });
-
    req.on("end",()=>{
     // usersDatabase= JSON.parse(usersDatabase)
-    userData = JSON.parse(userData)
     let now = new Date();
     let date = now.getFullYear() + '/' + (now.getMonth()) + '/' + now.getDate()
     let time = now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds();
     let dnt=   date + ' ' + time;
-  //   let values = [ usersDatabase.family, usersDatabase.finance, usersDatabase.fitness, usersDatabase.faith,usersDatabase.friend,usersDatabase.field,usersDatabase.fun,dnt];
-  //   let text = 'insert into myuser values ($1,$2,$3,$4,$5,$6,$7,$8);'
-  //   client.query(text,values,(err,res)=>{
-  //     if(err) throw err;
-  //     console.log(res.rows)
-  //  })
-
-  usersDatabase.push(userData)
-  console.log("These are the data that are sned by user " + usersDatabase)
+    let values = [ usersDatabase.family, usersDatabase.finance, usersDatabase.fitness, usersDatabase.faith,usersDatabase.friend,usersDatabase.field,usersDatabase.fun,dnt];
+    let text = 'insert into myuser values ($1,$2,$3,$4,$5,$6,$7,$8);'
+    client.query(text,values,(err,res)=>{
+      if(err) throw err;
+      console.log(res.rows)
+   })
      res.end("Your data has been stored successfully")
 })
    }
@@ -62,16 +65,14 @@ const server = http.createServer(function (req, res) {
 
   if(req.method==="GET" && req.url==="/get-records"){
 
-    res.write(JSON.stringify(usersDatabase))
-
-// let text = 'select * from myuser;'
-// client.query(text, (err,resp)=>{
-//   if (err) throw err;
-//   console.log("data from database",resp)
-// res.write(JSON.stringify(resp.rows) )
-// res.end();
-// })
-           res.end();
+let text = 'select * from myuser;'
+client.query(text, (err,resp)=>{
+  if (err) throw err;
+  console.log("data from database",resp)
+res.write(JSON.stringify(resp.rows) )
+res.end();
+})
+           
   }
 
 
@@ -84,39 +85,35 @@ const server = http.createServer(function (req, res) {
   // areas to focus message comes here
 
     if(req.method == "GET" && req.url == "/areas-to-focus") {
-      
-      // let text = 'select * from myuser order by "date and time" desc limit 1;'
-    console.log(usersDatabase)
-      // // client.query(text,(err,data)=>{
-      // //   if (err) throw err;
-      // //   console.log("hiii",data)
+      let text = 'select * from myuser order by "date and time" desc limit 1;'
+    
+      client.query(text,(err,data)=>{
+        if (err) throw err;
+        console.log("hiii",data)
 
-      //   let object = data.rows
+        let object = data.rows
 
         // for(const [key,value] of Object.entries(data)){
         //   console.log('${key}: ${value}')
         // }
-let db =[];
-let a = usersDatabase.length
-let obj = usersDatabase[a-1]
-console.log(usersDatabase[a-1])
-       
-          for(const [key,value] of Object.entries(obj)){
+
+        object.forEach((Element)=>{
+          for(const [key,value] of Object.entries(Element)){
             if (value<=3){
               // console.log(usersDatabase)
-              db.push(key)
+              usersDatabase.push(key,value)
             }
           }
+        })
         
         
-         console.log("area to focus" ,db)
-        res.write("Areas to focus are: "+ JSON.stringify(db))
-       
+        res.write(JSON.stringify(usersDatabase))
+        console.log("area to focus" , usersDatabase)
         res.end()
-      // })
+      })
 
     }
- })
+ });
 
 server.listen(process.env.PORT || 8080);
 console.log("Server is running")
