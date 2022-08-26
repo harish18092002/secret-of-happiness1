@@ -1,0 +1,39 @@
+{
+  "name": "secret-to-happiness",
+  "version": "1.0.0",
+ "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "asyn": "^0.0.1",
+    "async": "^3.2.4",
+    "axios": "^0.27.2",
+    "chalk": "^5.0.1",
+    "edit-json-file": "^1.7.0",
+    "esm": "^3.2.25",
+    "expres": "^0.0.5",
+    "express": "^4.18.1",
+    "http": "^0.0.1-security",
+    "jquery": "^3.6.0",
+    "loadash": "^1.0.0",
+    "loaddash": "^0.0.1-security",
+    "pg": "^8.7.3",
+    "string-to-json": "^0.1.0",
+    "url": "^0.11.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/harish18092002/Secret-of-happiness.git"
+  },
+  "keywords": [],
+  "bugs": {
+    "url": "https://github.com/harish18092002/Secret-of-happiness/issues"
+  },
+  "homepage": "https://github.com/harish18092002/Secret-of-happiness#readme",
+  "description": ""
+}
